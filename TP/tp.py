@@ -1,11 +1,29 @@
+# %%
 import numpy as np
 import pandas as pd
 import duckdb as dd
-#%% limpieza de codigo
+
+ruta = 'C:\\Users\\Mario\\OneDrive\\Documentos\\Marton\\LaboDatos\\TP\\'
+# %%== limpieza del padron de establecimientos educativos
 columnas_ee = 'A:C,G,L,N,V:Y'
+df_ee_padron = pd.read_excel(ruta + '2022_padron_oficial_establecimientos_educativos.xlsx', sheet_name='padron2022', skiprows=6, usecols=columnas_ee)
 
-df_ee_padron = pd.read_excel('TP\\2022_padron_oficial_establecimientos_educativos.xlsx', sheet_name='padron2022', skiprows=6, usecols=columnas_ee)
-df_ep_datos = pd.read_csv('TP\Datos_por_departamento_actividad_y_sexo.csv')
 
-print(df_ee_padron.head())
-#%%
+
+
+# %% limpieza de datos de establecimientos por departamentos, actividad y genero
+df_ep_datos = pd.read_csv(ruta + 'Datos_por_departamento_actividad_y_sexo.csv', usecols=[0,1,2,5,8,9,10,11])
+
+#obtengo solo los datos del año 2022
+query_datos_2022 = """
+                    SELECT *
+                    FROM df_ep_datos
+                    WHERE anio = 2022
+                """
+df_ep_datos = dd.sql(query_datos_2022).df()
+print(df_ep_datos.head())
+
+# %% limpieza del padron poblacional
+df_padron_poblacional = pd.read_excel(ruta + 'padron_poblacion.xlsX', sheet_name=None, skiprows=13, usecols='A:C')
+
+# %%
